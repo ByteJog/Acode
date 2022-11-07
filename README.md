@@ -86,7 +86,7 @@ p->pagetable以RISC-V硬件期望的格式保存进程的页表。Xv6使分页�
 
 bootloader将xv6内核加载到内存中的物理地址0x80000000处。它将内核放在0x80000000而不是0x0的原因是因为地址范围0x0:0x80000000包含I/O设备。
 
-在\_entry中的指令建立了一个栈，这样xv6就可以运行C代码了。Xv6在文件start.c中声明了初始堆栈stack0的空间(kernel/start.c:11)。 \_entry中的代码在堆栈顶部加载堆栈指针寄存器sp，其地址为stack0+4096，因为RISC-V上的堆栈向下增长。既然内核有了一个栈，那么\_entry将在start(kernel/start.c:21)中调用C代码。
+在\_entry处的指令建立了一个栈，这样xv6就可以运行C代码了。Xv6在文件start.c(kernel/start.c:11)中声明了初始堆栈stack0的空间。 \_entry中的代码在堆栈顶部加载堆栈指针寄存器sp，其地址为stack0+4096，因为RISC-V上的堆栈向下增长。既然内核有了一个栈，那么\_entry将在start(kernel/start.c:21)中调用C代码。
 
 函数start执行一些仅在机器模式下允许的配置，然后切换到管理员模式。为了进入管理模式，RISC-V提供指令mret。该指令最常用于从先前的管理模式调用返回到机器模式。start不会从这样的调用中返回，而是将事情设置为好像已经发生过一样:它在寄存器mstatus中将先前的特权模式设置为supervisor，通过将main的地址写入寄存器mepc将返回地址设置为main，通过将0写入页表寄存器satp来禁用supervisor模式下的虚拟地址转换，并将所有中断和异常委托给supervisor模式。
 
